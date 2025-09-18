@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Registrazione - SiwProducts</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Registrazione Utente</h1>
+        <div class="auth-links">
+            <a th:href="@{/login}">Login</a>
+            <a th:href="@{/}">Home</a>
+        </div>
+    </header>
+
+    <section class="catalogo">
+        <h2>Crea il tuo account</h2>
+        <form th:action="@{/auth/register}" method="post">
+            <div class="prodotto">
+                <label for="nome">Nome:</label><br>
+                <input type="text" id="nome" name="nome" required><br><br>
+
+                <label for="cognome">Cognome:</label><br>
+                <input type="text" id="cognome" name="cognome" required><br><br>
+
+                <label for="email">Email:</label><br>
+                <input type="email" id="email" name="email" required><br><br>
+
+                <label for="password">Password:</label><br>
+                <input type="password" id="password" name="password" required><br><br>
+
+                <button type="submit">Registrati</button>
+            </div>
+        </form>
+    </section>
+</body>
+</html>

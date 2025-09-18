@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>SiwProducts - Benvenuto</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Benvenuto su SiwProducts</h1>
+        <div class="auth-links">
+            <a th:href="@{/login}">Login</a> |
+            <a th:href="@{/register}">Registrati</a>
+        </div>
+    </header>
+
+    <section class="catalogo">
+        <h2>Catalogo Prodotti</h2>
+        <div class="prodotti" th:if="${prodotti != null}">
+            <div class="prodotto" th:each="prodotto : ${prodotti}">
+                <h3 th:text="${prodotto.nome}">Nome prodotto</h3>
+                <p th:text="${prodotto.descrizione}">Descrizione</p>
+                <p><strong>Prezzo:</strong> €<span th:text="${prodotto.prezzo}">0.00</span></p>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
