@@ -13,6 +13,7 @@ public class CredenzialiService {
     @Autowired
     private CredenzialiRepository credenzialiRepository;
 
+    @Transactional
     public Credenziali save(Credenziali credenziali) {
         return credenzialiRepository.save(credenziali);
     }
@@ -33,3 +34,4 @@ public class CredenzialiService {
         credenzialiRepository.deleteById(id);
     }
 }
+
