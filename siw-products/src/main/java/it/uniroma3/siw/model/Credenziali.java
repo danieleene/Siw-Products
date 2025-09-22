@@ -12,13 +12,16 @@ public class Credenziali {
     @Column(unique = true, nullable = false)
     private String email;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
     private String ruolo; //    "USER" o "ADMIN"
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "utente_id")
     private Utente utente;
 
@@ -45,9 +48,17 @@ public class Credenziali {
 
     public Utente getUtente() { return utente; }
     public void setUtente(Utente utente) {
-        this.utente = utente;
+        //NON CHIAMARE this.utente = utente;
         if (utente != null) {
-            utente.setCredenziali(this); // mantiene la coerenza bidirezionale
+           //NON CHIAMARE utente.setCredenziali(this); // mantiene la coerenza bidirezionale
         }
     }
+    public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }
+
