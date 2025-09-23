@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="'Prodotti - ' + ${categoria}">Prodotti</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1 th:text="'Prodotti per: ' + ${categoria}">Categoria</h1>
+    </header>
+
+	<!-- Visibile solo agli ADMIN -->
+	<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+	    <a th:href="@{'/admin/prodotto/new'}">➕ Inserisci un nuovo prodotto</a>
+	</div>
+
+	
+    <section class="catalogo">
+        <div class="prodotti" th:if="${prodotti != null}">
+            <div class="prodotto" th:each="prodotto : ${prodotti}">
+                <h3 th:text="${prodotto.nome}">Nome prodotto</h3>
+				<a th:href="@{'/prodotti/product/' + ${prodotto.id}}">
+				<img th:src="@{'/images/' + ${prodotto.immagine}}" th:alt="${prodotto.nome}" />
+                </a>
+				<!-- 🔐 Link visibile solo agli ADMIN -->
+				   <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+				       <a th:href="@{'/admin/prodotto/delete/' + ${prodotto.id} + '?tipologia=' + ${categoria}}"
+				          onclick="return confirm('Sei sicuro di voler eliminare questo prodotto?')">
+				          ❌ Rimuovi
+				       </a>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
