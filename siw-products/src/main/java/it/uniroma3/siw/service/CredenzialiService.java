@@ -33,5 +33,9 @@ public class CredenzialiService {
     public void deleteById(Long id) {
         credenzialiRepository.deleteById(id);
     }
+    public Credenziali getCredenziali(String username) {
+    return credenzialiRepository.findByUsername(username);
+    }
 }
+
 
