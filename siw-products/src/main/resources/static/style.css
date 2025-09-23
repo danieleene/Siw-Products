@@ -31,3 +31,40 @@ header {
     border-radius: 8px;
     box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
+
+.categorie {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 30px;
+    gap: 20px;
+}
+
+.categoria {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 300px;
+}
+
+.categoria img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+h2, h3 {
+    font-weight: 600;
+    color: #333;
+}
+
+.prodotto img {
+    max-width: 250px;   /* Puoi ridurre a 200px o 150px se vuoi più compattezza */
+    height: auto;
+    border-radius: 6px;
+    margin-top: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
