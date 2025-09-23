@@ -5,23 +5,36 @@
     <link rel="stylesheet" th:href="@{/style.css}">
 </head>
 <body>
-    <header>
-        <h1>Benvenuto su SiwProducts</h1>
-        <div class="auth-links">
-            <a th:href="@{/login}">Login</a> |
-            <a th:href="@{/register}">Registrati</a>
-        </div>
-    </header>
+	<header>
+	    <div style="display: flex; justify-content: space-between; align-items: center;">
+	        <h1>Benvenuto su SiwProducts</h1>
 
-    <section class="catalogo">
-        <h2>Catalogo Prodotti</h2>
-        <div class="prodotti" th:if="${prodotti != null}">
-            <div class="prodotto" th:each="prodotto : ${prodotti}">
-                <h3 th:text="${prodotto.nome}">Nome prodotto</h3>
-                <p th:text="${prodotto.descrizione}">Descrizione</p>
-                <p><strong>Prezzo:</strong> €<span th:text="${prodotto.prezzo}">0.00</span></p>
-            </div>
-        </div>
-    </section>
+	        <!-- Se l'utente è autenticato -->
+	        <div th:if="${#authorization.expression('isAuthenticated()')}" style="text-align: right;">
+	            <span th:text="'Utente: ' + ${#authentication.name}"></span>
+	            <span th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}"> (ADMIN)</span>
+	            <span th:if="${#authorization.expression('hasAuthority(''USER'')')}"> (USER)</span>
+	            |
+	            <a th:href="@{/logout}">Logout</a>
+	        </div>
+
+	        <!-- Se l'utente NON è autenticato -->
+	        <div th:unless="${#authorization.expression('isAuthenticated()')}" class="auth-links" style="text-align: right;">
+	            <a th:href="@{/login}">Login</a> |
+	            <a th:href="@{/auth/register}">Registrati</a>
+	        </div>
+	    </div>
+	</header>
+	
+    
+	
+	<section class="categorie" th:if="${categorie != null}">
+		    <div class="categoria" th:each="cat : ${categorie}">
+		        <h2 th:text="${cat.nome}">Nome categoria</h2>
+		        <a th:href="@{'/product/' + ${cat.tipologia}}">
+		            <img th:src="@{'/images/' + ${cat.immagine}}" th:alt="${cat.nome}" />
+		        </a>
+		    </div>
+		</section>
 </body>
 </html>
