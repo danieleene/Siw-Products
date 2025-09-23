@@ -18,8 +18,14 @@ public class HomeController {
 
     @GetMapping("/")
     public String index(Model model) {
-        Iterable<Prodotto> prodotti = prodottoService.findAll();
-        model.addAttribute("prodotti", prodotti);
+        // Categorie dinamiche
+        List<Categoria> categorie = List.of(
+            new Categoria("Articoli da cucina", "cucina", "1-cucina.jpg"),
+            new Categoria("Articoli da giardino", "giardino", "1-giardino.jpg"),
+            new Categoria("Per il bagno", "bagno", "1-bagno.jpg")
+        );
+        model.addAttribute("categorie", categorie);
+
         return "index";
     }
     
@@ -35,3 +41,4 @@ public class HomeController {
 
 
 }
+
