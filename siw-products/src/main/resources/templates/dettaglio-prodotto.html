@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${prodotto.nome}">Dettaglio Prodotto</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1 th:text="${prodotto.nome}">Nome prodotto</h1>
+    </header>
+
+    <section class="dettaglio">
+        <img th:src="@{'/images/' + ${prodotto.immagine}}" th:alt="${prodotto.nome}" />
+        <p><strong>Descrizione:</strong> <span th:text="${prodotto.descrizione}">Descrizione</span></p>
+        <p><strong>Prezzo:</strong> €<span th:text="${prodotto.prezzo}">0.00</span></p>
+    </section>
+
+	<!-- 🔐 Link visibile solo agli ADMIN -->
+	<div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
+	    <a th:href="@{'/prodotti/admin/edit/' + ${prodotto.id}}">✏️ Modifica prodotto</a>
+	</div>
+
+	<a th:href="@{'/product/' + ${prodotto.tipologia}}">← Torna alla categoria</a>
+
+
+
+</body>
+</html>
