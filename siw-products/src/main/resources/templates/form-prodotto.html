@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Nuovo Prodotto</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Inserisci un nuovo prodotto</h1>
+    </header>
+
+    <form th:action="@{/admin/prodotto/save}" th:object="${prodotto}" method="post">
+        <label>Nome:</label>
+        <input type="text" th:field="*{nome}" required /><br/>
+
+        <label>Tipologia:</label>
+        <select th:field="*{tipologia}">
+            <option value="CUCINA">Cucina</option>
+            <option value="GIARDINO">Giardino</option>
+            <option value="BAGNO">Bagno</option>
+        </select><br/>
+
+        <label>Nome file immagine (es. mestolo.jpg):</label>
+        <input type="text" th:field="*{immagine}" required /><br/>
+
+        <button type="submit">Salva</button>
+    </form>
+</body>
+</html>
