@@ -17,6 +17,10 @@ public class ProdottoController {
     @Autowired
     private ProdottoService prodottoService;
 
+    @Autowired
+    private CommentoService commentoService;
+
+
     @GetMapping
     public Iterable<Prodotto> getAllProdotti() {
         return prodottoService.findAll();
@@ -53,15 +57,30 @@ public class ProdottoController {
         prodottoService.deleteById(id);
     }
     
+
     @GetMapping("/product/{id}")
-    public String showProduct(@PathVariable Long id, Model model) {
+    public String showProduct(@PathVariable Long id, Model model,
+                              @AuthenticationPrincipal Credenziali credenziali) {
         Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
-        
+
         if (prodottoOpt.isEmpty()) {
             return "redirect:/error"; // errore!
         }
 
-        model.addAttribute("prodotto", prodottoOpt.get());
+        Prodotto prodotto = prodottoOpt.get();
+        model.addAttribute("prodotto", prodotto);
+
+        // Se l'utente è autenticato e ha ruolo USER, carica il suo commento
+        if (credenziali != null && credenziali.getRuolo().equals("USER")) {
+            Utente utente = credenziali.getUtente();
+            Optional<Commento> commento = commentoService.findByAutoreAndProdotto(utente, prodotto);
+            model.addAttribute("commentoUtente", commento.orElse(null));
+        }
+
+        // Carica tutti i commenti pubblici per il prodotto
+        List<Commento> tuttiCommenti = commentoService.findByProdotto(prodotto);
+        model.addAttribute("tuttiCommenti", tuttiCommenti);
+
         return "dettaglio-prodotto";
     }
     
@@ -93,3 +112,4 @@ public class ProdottoController {
 
 
 }
+
