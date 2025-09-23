@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Commenta: <span th:text="${prodotto.nome}">Prodotto</span></title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1>Commenta: <span th:text="${prodotto.nome}">Prodotto</span></h1>
+    </header>
+
+    <section class="commento-form">
+        <img th:src="@{'/images/' + ${prodotto.immagine}}" th:alt="${prodotto.nome}" />
+        <p><strong>Descrizione:</strong> <span th:text="${prodotto.descrizione}">Descrizione</span></p>
+        <p><strong>Prezzo:</strong> €<span th:text="${prodotto.prezzo}">0.00</span></p>
+
+        <!-- 🔐 Se il commento esiste già -->
+        <div th:if="${commentoEsistente != null}">
+            <p class="text-danger">Hai già commentato questo prodotto. Elimina il commento per poterne scrivere uno nuovo.</p>
+            <textarea name="testo" disabled class="form-control">Commento disabilitato</textarea>
+            <button type="submit" class="btn" disabled>Salva commento</button>
+        </div>
+
+        <!-- ✅ Se il commento NON esiste -->
+        <div th:if="${commentoEsistente == null}">
+            <form th:action="@{'/commenti/form/create/' + ${prodotto.id}}" method="post">
+                <label for="testo">Inserisci il tuo commento:</label>
+                <textarea name="testo" class="form-control" required></textarea>
+                <button type="submit" class="btn btn-success">Salva commento</button>
+            </form>
+        </div>
+
+        <br>
+        <a th:href="@{'/product/' + ${prodotto.id}}">← Torna al prodotto</a>
+    </section>
+</body>
+</html>

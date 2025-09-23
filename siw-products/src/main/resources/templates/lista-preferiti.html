@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista Preferiti</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+    <header>
+        <h1>I tuoi prodotti preferiti</h1>
+    </header>
+
+    <section class="catalogo">
+        <div th:if="${preferiti.isEmpty()}">
+            <p>Non hai ancora aggiunto nessun prodotto ai preferiti.</p>
+        </div>
+        <div class="prodotti" th:each="prodotto : ${preferiti}">
+            <div class="prodotto">
+                <h3 th:text="${prodotto.nome}">Nome prodotto</h3>
+				<a th:href="@{'/prodotti/product/' + ${prodotto.id}}">
+                    <img th:src="@{'/images/' + ${prodotto.immagine}}" th:alt="${prodotto.nome}" />
+                </a>
+                <p th:text="'Prezzo: €' + ${prodotto.prezzo}"></p>
+				
+				<form th:action="@{'/utenti/preferiti/rimuovi/' + ${prodotto.id}}" method="post">
+				    <button type="submit">❌ Rimuovi dai preferiti</button>
+				</form>
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>
