@@ -49,6 +49,11 @@ public class SecurityConfiguration {
                 .requestMatchers(HttpMethod.POST,"/registered/**").hasAnyAuthority(Role.REGISTERED.name(), Role.ADMIN.name())
                 .requestMatchers(HttpMethod.GET,"/admin/**").hasAnyAuthority(Role.ADMIN.name())
                 .requestMatchers(HttpMethod.POST,"/admin/**").hasAnyAuthority(Role.ADMIN.name())
+                .requestMatchers(HttpMethod.GET, "/commenti/form/**").hasAuthority("USER")
+                .requestMatchers(HttpMethod.POST, "/commenti/form/create/**").hasAuthority("USER")
+                .requestMatchers(HttpMethod.POST, "/commenti/create/**").hasAuthority("USER")
+                .requestMatchers(HttpMethod.POST, "/commenti/delete/**").hasAuthority("USER")
+			
         		// tutti gli utenti autenticati possono accere alle pagine rimanenti 
                 .anyRequest().authenticated()
                 // LOGIN: qui definiamo il login
@@ -81,3 +86,4 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
+
