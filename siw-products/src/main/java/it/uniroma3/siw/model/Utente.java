@@ -16,7 +16,12 @@ public class Utente {
     private String email;
 
     @ManyToMany
-    private List<Prodotto> prodottiPreferiti;
+    @JoinTable(
+        name = "utente_preferiti",
+        joinColumns = @JoinColumn(name = "utente_id"),
+        inverseJoinColumns = @JoinColumn(name = "prodotto_id")
+    )
+    private Set<Prodotto> prodottiPreferiti = new HashSet<>();
 
     @OneToMany(mappedBy = "autore")
     private List<Commento> commenti;
@@ -59,3 +64,4 @@ public class Utente {
         }
     }
 }
+
