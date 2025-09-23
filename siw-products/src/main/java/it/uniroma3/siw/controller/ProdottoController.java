@@ -1,6 +1,8 @@
 package it.uniroma3.siw.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import it.uniroma3.siw.model.Prodotto;
 import it.uniroma3.siw.service.ProdottoService;
@@ -8,7 +10,7 @@ import it.uniroma3.siw.service.ProdottoService;
 import java.util.List;
 import java.util.Optional;
 
-@RestController
+@Controller
 @RequestMapping("/prodotti")
 public class ProdottoController {
 
@@ -30,10 +32,10 @@ public class ProdottoController {
         return prodottoService.findByNome(nome);
     }
 
-    @GetMapping("/tipologia/{tipologia}")
+   /* @GetMapping("/tipologia/{tipologia}")
     public List<Prodotto> getByTipologia(@PathVariable String tipologia) {
         return prodottoService.findByTipologia(tipologia);
-    }
+    } */ 
 
     @PostMapping
     public Prodotto createProdotto(@RequestBody Prodotto prodotto) {
@@ -50,4 +52,44 @@ public class ProdottoController {
     public void deleteProdotto(@PathVariable Long id) {
         prodottoService.deleteById(id);
     }
+    
+    @GetMapping("/product/{id}")
+    public String showProduct(@PathVariable Long id, Model model) {
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
+        
+        if (prodottoOpt.isEmpty()) {
+            return "redirect:/error"; // errore!
+        }
+
+        model.addAttribute("prodotto", prodottoOpt.get());
+        return "dettaglio-prodotto";
+    }
+    
+    @GetMapping("/admin/edit/{id}")
+    public String modificaProdotto(@PathVariable Long id, Model model) {
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
+        if (prodottoOpt.isEmpty()) {
+            return "redirect:/error";
+        }
+        model.addAttribute("prodotto", prodottoOpt.get());
+        return "form-modifica-prodotto";
+    }
+
+    @PostMapping("/admin/edit/{id}")
+    public String salvaModifica(@PathVariable Long id,
+                                @RequestParam String descrizione,
+                                @RequestParam Double prezzo) {
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
+        if (prodottoOpt.isPresent()) {
+            Prodotto prodotto = prodottoOpt.get();
+            prodotto.setDescrizione(descrizione);
+            prodotto.setPrezzo(prezzo);
+            prodottoService.save(prodotto);
+        }
+        return "redirect:/prodotti/product/" + id;
+
+    }
+
+
+
 }
