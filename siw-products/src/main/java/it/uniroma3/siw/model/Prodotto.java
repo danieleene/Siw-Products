@@ -80,4 +80,14 @@ public class Prodotto {
     	this.prodottiSimili = prodottiSimili;
     	}
 
+		public String getImmagine() {
+		return immagine;
+	}
+
+	public void setImmagine(String immagine) {
+		this.immagine = immagine;
+	}
+
+
 }
+
