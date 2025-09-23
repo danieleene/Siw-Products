@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registrazione - SiwProducts</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
+    <link rel="stylesheet" th:href="@{/style.css}" />
 </head>
 <body>
     <header>
@@ -15,19 +15,26 @@
 
     <section class="catalogo">
         <h2>Crea il tuo account</h2>
-        <form th:action="@{/auth/register}" method="post">
+
+        <form th:action="@{/auth/register}" th:object="${form}" method="post">
             <div class="prodotto">
-                <label for="nome">Nome:</label><br>
-                <input type="text" id="nome" name="nome" required><br><br>
+                <label for="nome">Nome:</label><br />
+                <input type="text" th:field="*{nome}" id="nome" required /><br /><br />
 
-                <label for="cognome">Cognome:</label><br>
-                <input type="text" id="cognome" name="cognome" required><br><br>
+                <label for="cognome">Cognome:</label><br />
+                <input type="text" th:field="*{cognome}" id="cognome" required /><br /><br />
 
-                <label for="email">Email:</label><br>
-                <input type="email" id="email" name="email" required><br><br>
+                <label for="email">Email:</label><br />
+                <input type="email" th:field="*{email}" id="email" required /><br /><br />
 
-                <label for="password">Password:</label><br>
-                <input type="password" id="password" name="password" required><br><br>
+                <label for="password">Password:</label><br />
+                <input type="password" th:field="*{password}" id="password" required /><br /><br />
+
+                <label for="role">Ruolo:</label><br />
+                <select th:field="*{role}" id="role">
+                    <option value="USER">Utente</option>
+                    <option value="ADMIN">Amministratore</option>
+                </select><br /><br />
 
                 <button type="submit">Registrati</button>
             </div>
@@ -35,3 +42,4 @@
     </section>
 </body>
 </html>
+
