@@ -102,5 +102,50 @@ public class UtenteController {
         return "redirect:/utente/dashboard";
     }
 
+    @PostMapping("/preferiti/{id}")
+    public String aggiungiAiPreferiti(@PathVariable("id") Long prodottoId, Principal principal) {
+        Credenziali credenziali = credenzialiService.getCredenziali(principal.getName());
+        Utente utente = credenziali.getUtente();
+
+        Prodotto prodotto = prodottoService.findById(prodottoId)
+        	    .orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
+
+
+        if (!utente.getProdottiPreferiti().contains(prodotto)) {
+            utente.getProdottiPreferiti().add(prodotto);
+            utenteService.save(utente);
+        }
+
+        return "redirect:/"; // oppure "redirect:/prodotti" se vuoi tornare alla lista
+    }
+    
+    @GetMapping("/preferiti/lista")
+    @PreAuthorize("hasRole('USER')")
+    public String mostraListaPreferiti(Model model, Principal principal) {
+        Credenziali credenziali = credenzialiService.getCredenziali(principal.getName());
+        Utente utente = credenziali.getUtente();
+
+        Set<Prodotto> preferiti = utente.getProdottiPreferiti();
+        model.addAttribute("preferiti", preferiti);
+
+        return "lista-preferiti"; // questo è il nome del template HTML
+    }
+
+    @PostMapping("/preferiti/rimuovi/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public String rimuoviDaPreferiti(@PathVariable Long id, Principal principal) {
+        Credenziali credenziali = credenzialiService.getCredenziali(principal.getName());
+        Utente utente = credenziali.getUtente();
+
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
+        if (prodottoOpt.isPresent()) {
+            utente.getProdottiPreferiti().remove(prodottoOpt.get());
+            utenteService.save(utente); // salva la modifica
+        }
+
+        return "redirect:/utenti/preferiti/lista";
+    }
+
 
 }
+
