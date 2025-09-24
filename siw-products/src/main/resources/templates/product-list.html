@@ -9,7 +9,7 @@
     <h1 th:text="'Prodotti per: ' + ${categoria}">Categoria</h1>
 
     <!-- 🔍 Barra di ricerca visibile a tutti -->
-    <form th:action="@{/products/search}" method="get" class="search-bar">
+    <form th:action="@{/prodotti/search}" method="get" class="search-bar">
         <input type="text" name="name" placeholder="Cerca per nome..." />
         <button type="submit">🔍 Cerca</button>
     </form>
