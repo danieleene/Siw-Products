@@ -36,24 +36,29 @@ public class CommentoController {
     @PostMapping("/create/{prodottoId}")
     public ResponseEntity<?> createCommento(@PathVariable Long prodottoId,
                                             @RequestBody String testo,
-                                            @AuthenticationPrincipal Credenziali credenziali) {
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+        // Estrai credenziali e utente autenticato
+        Credenziali credenziali = userDetails.getCredenziali();
         Utente autore = credenziali.getUtente();
-        Optional<Prodotto> prodottoOpt = prodottoService.findById(prodottoId);
 
+        // Recupera il prodotto
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(prodottoId);
         if (prodottoOpt.isEmpty()) {
             return ResponseEntity.badRequest().body("Prodotto non trovato.");
         }
-
         Prodotto prodotto = prodottoOpt.get();
 
+        // Verifica se l'utente ha già commentato questo prodotto
         Optional<Commento> esistente = commentoService.findByAutoreAndProdotto(autore, prodotto);
         if (esistente.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                                  .body("Hai già commentato questo prodotto. Elimina il commento per poterlo riscrivere.");
         }
 
+        // Crea e salva il nuovo commento
         Commento nuovo = new Commento(testo, autore, prodotto);
         commentoService.save(nuovo);
+
         return ResponseEntity.ok(nuovo);
     }
 
@@ -95,67 +100,79 @@ public class CommentoController {
         return ResponseEntity.ok("Commento eliminato con successo.");
     }
 
-    @GetMapping("/commenti/form/{prodottoId}")
-    public String mostraFormCommento(@PathVariable Long prodottoId, Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    @GetMapping("/commenta/{id}")
+    public String mostraFormCommento(@PathVariable Long id,
+                                     @AuthenticationPrincipal CustomUserDetails userDetails,
+                                     Model model) {
+        Credenziali credenziali = userDetails.getCredenziali();
 
-        if (!(principal instanceof User user)) {
-            return "redirect:/login";
+        if (credenziali == null || !credenziali.getRuolo().equals("USER")) {
+            return "redirect:/error";
         }
 
-        String email = user.getUsername(); // se usi email come username
-        Credenziali credenziali = credenzialiRepository.findByEmail(email);
-        if (credenziali == null) {
-            return "redirect:/login";
-        }
-
-        Utente utente = credenziali.getUtente();
-        Optional<Prodotto> prodottoOpt = prodottoService.findById(prodottoId);
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
         if (prodottoOpt.isEmpty()) {
             return "redirect:/error";
         }
 
-        Prodotto prodotto = prodottoOpt.get();
-        Optional<Commento> commento = commentoService.findByAutoreAndProdotto(utente, prodotto);
-
-        model.addAttribute("prodotto", prodotto);
-        model.addAttribute("commentoEsistente", commento.orElse(null));
+        model.addAttribute("prodotto", prodottoOpt.get());
+        model.addAttribute("commento", new Commento());
         return "commentoForm";
     }
 
+    //SOLO PER TEST!
     
-    @PostMapping("/commenti/form/create/{prodottoId}")
-    public String creaCommentoDaForm(@PathVariable Long prodottoId,
-                                     @RequestParam String testo) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        if (!(principal instanceof User user)) {
-            return "redirect:/login";
+   /* @GetMapping("/commenta/{id}")
+    public String mostraFormCommento(@PathVariable Long id,
+                                     @AuthenticationPrincipal Credenziali credenziali,
+                                     Model model) {
+        System.out.println("🔍 ID ricevuto nel controller: " + id);
+        System.out.println("🔍 Credenziali: " + credenziali);
+        if (credenziali != null) {
+            System.out.println("🔍 Ruolo: " + credenziali.getRuolo());
         }
 
-        String email = user.getUsername(); // se usi email come username
-        Credenziali credenziali = credenzialiRepository.findByEmail(email);
-        if (credenziali == null) {
-            return "redirect:/login";
-        }
+        Optional<Prodotto> prodottoOpt = prodottoService.findById(id);
+        System.out.println("🔍 Prodotto trovato? " + prodottoOpt.isPresent());
 
-        Utente autore = credenziali.getUtente();
-        Optional<Prodotto> prodottoOpt = prodottoService.findById(prodottoId);
-        if (prodottoOpt.isEmpty()) {
+        if (credenziali == null || !credenziali.getRuolo().equals("USER") || prodottoOpt.isEmpty()) {
             return "redirect:/error";
         }
 
-        Prodotto prodotto = prodottoOpt.get();
-        Commento commento = new Commento();
+        model.addAttribute("prodotto", prodottoOpt.get());
+        model.addAttribute("commento", new Commento());
+        return "commentoForm";
+    } */
+    
+    
+    @PostMapping("/create/{id}")
+    public String creaCommento(@PathVariable Long id,
+                               @ModelAttribute("commento") Commento commento,
+                               @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        Credenziali credenziali = userDetails.getCredenziali();
+
+        if (credenziali == null || !credenziali.getRuolo().equals("USER")) {
+            return "redirect:/error";
+        }
+
+        Utente autore = credenziali.getUtente();
+        Prodotto prodotto = prodottoService.findById(id).orElse(null);
+
+        if (prodotto == null) {
+            return "redirect:/error";
+        }
+
         commento.setAutore(autore);
         commento.setProdotto(prodotto);
-        commento.setTesto(testo);
+
         commentoService.save(commento);
 
-        return "redirect:/";
+        return "redirect:/prodotti/product/" + id;
     }
 
 
 
 
 }
+
