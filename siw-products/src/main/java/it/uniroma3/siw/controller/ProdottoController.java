@@ -112,6 +112,9 @@ public class ProdottoController {
     @GetMapping("/search")
    public String searchProductsByName(@RequestParam("name") String name, Model model) {
     List<Prodotto> prodotti = prodottoService.findByNomeContainingIgnoreCase(name);
+    if (prodotti.isEmpty()) {
+         return "error"; // Errore!
+    }
     model.addAttribute("prodotti", prodotti);
     model.addAttribute("categoria", "Risultati per: " + name);
     return "product-list";
@@ -120,5 +123,6 @@ public class ProdottoController {
 
 
 }
+
 
 
