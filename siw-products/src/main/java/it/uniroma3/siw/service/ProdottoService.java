@@ -64,4 +64,10 @@ public class ProdottoService {
         principale.getProdottiSimili().remove(simile);
         prodottoRepository.save(principale);
     }
+
+    public List<Prodotto> findByNomeContainingIgnoreCase(String nome) {
+    return prodottoRepository.findByNomeContainingIgnoreCase(nome);
 }
+
+}
+
